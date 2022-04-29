@@ -27,6 +27,8 @@ firebaseConfig={
   'messagingSenderId': "153152091541",
   'appId': "1:153152091541:web:4bfd99be6a470011f0f29c"
 }
+
+
 app = Flask(__name__)
 
 #Listado  Funcionando
