@@ -1,10 +1,11 @@
-import pyrebase
 from firebase_admin import credentials, firestore, initialize_app
 from flask import Flask, jsonify, request
 import json
 import requests
+import http.client
 
 geoPosition = '95f541b868bc284aac25bb5401c73c1f'
+baseUrl= 'http://api.positionstack.com/v1/forward'
 
 # from models import Series
 
@@ -16,7 +17,6 @@ firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 series_ref = db.collection('files')
-
 
 firebaseConfig={
   'apiKey': "AIzaSyDneSkHdMLn8IzP86T_kCu6zHUSjGTFEYA",
@@ -38,7 +38,29 @@ def get():
   return jsonify({"data":lista_archivos}),200
 
 
-# @app.route('/getPrediction', methods=['GET'])
+@app.route('/getPrediction', methods=['GET'])
+def getPrediction():
+  conn = http.client.HTTPSConnection("weatherbit-v1-mashape.p.rapidapi.com")
+  payload = ''
+  headers = {
+    'X-RapidAPI-Host': 'weatherbit-v1-mashape.p.rapidapi.com',
+    'X-RapidAPI-Key': '2829b312b3msh613b325399f4673p1a038djsn1b5ed4beb423'
+  }
+  args = request.args
+  lon= args.get('lon')
+  lat = args.get('lat')
+  
+  conn.request("GET", "/current?lon="+lon+"&lat="+lat, payload, headers)
+  res = conn.getresponse()
+  data = res.read().decode('utf-8')
+  datajson= json.loads(data)
+  testdata = datajson['data'][0]
+  countryCode= testdata['country_code']
+  cityName = testdata['city_name']
+  temp = testdata['temp']
+  data = {'pais':countryCode ,'ciudad':cityName, 'temp':temp}
+  db.collection(u'predictions').add(data)
+  return jsonify(data)
 
 
 @app.route('/sendDataset', methods=['POST'])
@@ -115,24 +137,3 @@ if __name__ == '__main__':
 
 # data={'name':"Santiago", 'url':"www.test.com", 'type':"csv"}
 # db.child("files").child("myownid").set(data)
-
-
-# from flask import Flask, redirect, url_for, render_template
-
-# app = Flask(__name__)
-
-# @app.route("/")
-# def home():
-#     return render_template("index.html")
-
-
-# @app.route("/login", methods=["POST", "GET"])
-# def login():
-#     return render_template()
-
-# @app.route("/<usr>")
-# def user(usr):
-#     return f"<h1>{usr}</h1>"
-
-# if __name__ == "__main__":
-#     app.run(debug=True)
