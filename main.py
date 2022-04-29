@@ -1,22 +1,16 @@
-from firebase_admin import credentials, firestore, initialize_app
+from fileinput import filename
+# from pyrebase import pyrebase
+from firebase_admin import credentials, firestore
 from flask import Flask, jsonify, request
 import json
-import requests
 import http.client
+from datetime import datetime
 
 geoPosition = '95f541b868bc284aac25bb5401c73c1f'
 baseUrl= 'http://api.positionstack.com/v1/forward'
 
-# from models import Series
-
 import firebase_admin
-from firebase_admin import credentials
 
-cred = credentials.Certificate("clave.json")
-firebase_admin.initialize_app(cred)
-
-db = firestore.client()
-series_ref = db.collection('files')
 
 firebaseConfig={
   'apiKey': "AIzaSyDneSkHdMLn8IzP86T_kCu6zHUSjGTFEYA",
@@ -27,7 +21,16 @@ firebaseConfig={
   'messagingSenderId': "153152091541",
   'appId': "1:153152091541:web:4bfd99be6a470011f0f29c"
 }
+
+# firebase = pyrebase.initialize_app(firebaseConfig)
+# storage= firebase.storage()
+
+cred = credentials.Certificate("clave.json")
+firebase_admin.initialize_app(cred)
+db = firestore.client()
 app = Flask(__name__)
+
+series_ref = db.collection('files')
 
 #Listado  Funcionando
 @app.route('/getFiles', methods=['GET'])
@@ -58,82 +61,25 @@ def getPrediction():
   countryCode= testdata['country_code']
   cityName = testdata['city_name']
   temp = testdata['temp']
+  currentDate = datetime.now()
+  date= str(currentDate)
   data = {'pais':countryCode ,'ciudad':cityName, 'temp':temp}
-  db.collection(u'predictions').add(data)
+  databd= {'pais':countryCode ,'ciudad':cityName, 'temp':temp, 'fecha': date, 'lon': lon, 'lat': lat}
+  db.collection(u'predictions').add(databd)
+  print(data)
   return jsonify(data)
 
 
 @app.route('/sendDataset', methods=['POST'])
 def send_data():
-  db.collection(u'files').add({'name':'Test','url':'www.test1.com','type':'csv'})
-  return 'test'
-# def sendData():
-    #filename=input("Ingresa el nombre del archivo que quieres subir")
-    #cloudname=input("ingresa el nombre del archivo que quieres en la base de datos")
-    #storage.child(cloudname).put(filename)
-    # data={'name':"Santiago", 'url':"www.test.com", 'type':"csv"}
-    # db.child("files").child("myownid").set(data)    
-
-
-
-# @app.route('/', methods=['GET', 'POST'])
-# def basic():
-# 	if request.method == 'POST':
-# 		if request.form['submit'] == 'add':
-
-# 			name = request.form['name']
-# 			db.child("todo").push(name)
-# 			todo = db.child("todo").get()
-# 			to = todo.val()
-# 			return render_template('index.html', t=to.values())
-# 		elif request.form['submit'] == 'delete':
-# 			db.child("todo").remove()
-# 		return render_template('index.html')
-# 	return render_template('index.html')
+  if request.method == 'POST':
+    f = request.files['file']
+    filename = f.filename
+    print(filename)
+    # storage.child("archivos").put(filename)
+    # url=storage.child("archivos").get_url(None)
+    #storage.child("google.txt").download("","downloaded.txt")
+  return jsonify((filename))
 
 if __name__ == '__main__':
 	app.run(debug=True)
-
-
-
-#auth=firebase.auth()
-# storage=firebase.storage()
-
-#Login
-#Authentication
-#email = input("Enter your email: ")
-#password= input("Enter your password: ")
-#try: 
-#    auth.sign_in_with_email_and_password(email,password)
-#    print("Autenticado con exito")
-#except:
-#    print("Clave incorrecta, intente de nuevo")
-
-
-#Registro 
-#email = input("Ingresa tu  email: ")
-#password= input("Ingresa tu contraseña clave: ")
-#confirmpass = input("Confirma tu clave")
-#if password==confirmpass:
- #   try:    
-  #      auth.create_user_with_email_and_password(email,password)       
-   #     print("En hora buena")
-    #except:
-     #   print("Ya existe el email")
-
-#storage
-#filename=input("Ingresa el nombre del archivo que quieres subir")
-#cloudname=input("ingresa el nombre del archivo que quieres en la base de datos")
-#storage.child(cloudname).put(filename)
-
-#print(sorage.child(cloudname).get_url(None))
-#url=storage.child(cloudname).get_url(None)
-#f=urllib.request.urlopen(url).read()
-#print(f)
-
-#download
-#cloudname=input("ingresa el nombre del archivo que quieres descargar")
-#storage.child("google.txt").download("","downloaded.txt")
-
-# data={'name':"Santiago", 'url':"www.test.com", 'type':"csv"}
-# db.child("files").child("myownid").set(data)
