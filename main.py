@@ -66,8 +66,8 @@ def getPrediction():
   temp = testdata['temp']
   currentDate = datetime.now()
   date= str(currentDate)
-  data = {'pais':country ,'ciudad':city, 'temp':temp, 'descripcion': description}
-  databd= {'pais':country ,'ciudad':city, 'temp':temp, 'fecha': date, 'lon': lon, 'lat': lat, 'descripcion': description}
+  data = {'country':country ,'city':city, 'temp':temp, 'description': description}
+  databd= {'country':country ,'city':city, 'temp':temp, 'date': date, 'lon': lon, 'lat': lat, 'description': description}
   
   db.collection(u'predictions').add(databd)
   print(data)
