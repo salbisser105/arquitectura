@@ -5,7 +5,7 @@ from flask import Flask, jsonify, request
 import json
 import http.client
 from datetime import datetime
-import re
+from  flask_cors import CORS
 
 geoPosition = '95f541b868bc284aac25bb5401c73c1f'
 baseUrl= 'http://api.positionstack.com/v1/forward'
@@ -30,6 +30,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 bucket = storage.bucket("arq-avanzada.appspot.com")
 app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 series_ref = db.collection('files')
 
@@ -54,7 +55,7 @@ def getPrediction():
   lon= args.get('lon')
   lat = args.get('lat')
   
-  conn.request("GET", "/current?lon="+lon+"&lat="+lat, payload, headers)
+  conn.request("GET", "/current?lang=es&lon="+lon+"&lat="+lat, payload, headers)
   res = conn.getresponse()
   data = res.read().decode('utf-8')
   datajson= json.loads(data)
