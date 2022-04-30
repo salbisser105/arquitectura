@@ -55,7 +55,7 @@ def getPrediction():
   lon= args.get('lon')
   lat = args.get('lat')
   
-  conn.request("GET", "/current?lon="+lon+"&lat="+lat, payload, headers)
+  conn.request("GET", "/current?lang=es&lon="+lon+"&lat="+lat, payload, headers)
   res = conn.getresponse()
   data = res.read().decode('utf-8')
   datajson= json.loads(data)
