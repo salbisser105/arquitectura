@@ -1,10 +1,11 @@
 from fileinput import filename
-# from pyrebase import pyrebase
-from firebase_admin import credentials, firestore
+from pyrebase import pyrebase
+from firebase_admin import credentials, firestore, storage
 from flask import Flask, jsonify, request
 import json
 import http.client
 from datetime import datetime
+import re
 
 geoPosition = '95f541b868bc284aac25bb5401c73c1f'
 baseUrl= 'http://api.positionstack.com/v1/forward'
@@ -22,12 +23,12 @@ firebaseConfig={
   'appId': "1:153152091541:web:4bfd99be6a470011f0f29c"
 }
 
-# firebase = pyrebase.initialize_app(firebaseConfig)
-# storage= firebase.storage()
+
 
 cred = credentials.Certificate("clave.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
+bucket = storage.bucket("arq-avanzada.appspot.com")
 app = Flask(__name__)
 
 series_ref = db.collection('files')
@@ -75,11 +76,10 @@ def send_data():
   if request.method == 'POST':
     f = request.files['file']
     filename = f.filename
-    print(filename)
-    # storage.child("archivos").put(filename)
-    # url=storage.child("archivos").get_url(None)
-    #storage.child("google.txt").download("","downloaded.txt")
-  return jsonify((filename))
+    blob = bucket.blob(filename)
+    blob.upload_from_file(f)
+    blob.make_public()
+  return jsonify((blob.public_url))
 
 if __name__ == '__main__':
 	app.run(debug=True)
