@@ -60,13 +60,16 @@ def getPrediction():
   data = res.read().decode('utf-8')
   datajson= json.loads(data)
   testdata = datajson['data'][0]
-  countryCode= testdata['country_code']
-  cityName = testdata['city_name']
+  description = testdata['weather']['description']
+  
+  country= testdata['country_code']
+  city = testdata['city_name']
   temp = testdata['temp']
   currentDate = datetime.now()
   date= str(currentDate)
-  data = {'pais':countryCode ,'ciudad':cityName, 'temp':temp}
-  databd= {'pais':countryCode ,'ciudad':cityName, 'temp':temp, 'fecha': date, 'lon': lon, 'lat': lat}
+  data = {'pais':country ,'ciudad':city, 'temp':temp, 'descripcion': description}
+  databd= {'pais':country ,'ciudad':city, 'temp':temp, 'fecha': date, 'lon': lon, 'lat': lat, 'descripcion': description}
+  
   db.collection(u'predictions').add(databd)
   print(data)
   return jsonify(data)

@@ -1,0 +1,83 @@
+{
+	"info": {
+		"_postman_id": "45527c44-279b-452c-9f7b-4df77fdd2308",
+		"name": "Arquitectura",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetFiles",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://backend-arquitecturas-avanzada.herokuapp.com/getFiles",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"getFiles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SendData",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/D:/Bebo/bebo-elevator.exe"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://backend-arquitecturas-avanzada.herokuapp.com/sendDataset",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"sendDataset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getPrediction",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://backend-arquitecturas-avanzada.herokuapp.com/getPrediction?lon=8.3&lat=47.04",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"getPrediction"
+					],
+					"query": [
+						{
+							"key": "lon",
+							"value": "8.3"
+						},
+						{
+							"key": "lat",
+							"value": "47.04"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
