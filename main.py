@@ -30,7 +30,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 bucket = storage.bucket("arq-avanzada.appspot.com")
 app = Flask(__name__)
-cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 series_ref = db.collection('files')
 
